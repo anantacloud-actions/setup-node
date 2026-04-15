@@ -1,0 +1,36 @@
+name: "Setup Node.js Pro"
+description: "Advanced Node.js setup with auto-detect, caching, semver, and install"
+
+inputs:
+  node-version:
+    description: "Node version (overrides .nvmrc/.node-version)"
+    required: false
+
+  check-latest:
+    description: "Resolve latest matching version"
+    default: "true"
+
+  cache:
+    description: "Enable caching (true/false)"
+    default: "true"
+
+  install:
+    description: "Auto install dependencies"
+    default: "true"
+
+  debug:
+    description: "Enable debug logs"
+    default: "false"
+
+outputs:
+  node-version:
+    description: "Resolved Node version"
+
+branding:
+  color: blue
+  icon: command
+  
+runs:
+  using: "node24"
+  main: "dist/index.js"
+  post: "dist/post.js"
