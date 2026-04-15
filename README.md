@@ -1,5 +1,7 @@
 # ⚡ Setup Node.js Pro
 
+<img width="863" height="485" alt="image" src="https://github.com/user-attachments/assets/ff9b4782-a815-41c3-8f27-ecc3a7391392" />
+
 > The smartest way to set up Node.js in GitHub Actions.  
 > Zero guesswork. Maximum speed. Built for modern CI.
 
