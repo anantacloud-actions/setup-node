@@ -5,7 +5,7 @@
 > The smartest way to set up Node.js in GitHub Actions.  
 > Zero guesswork. Maximum speed. Built for modern CI.
 
-<p align="center">
+<p align="left">
   <img src="https://img.shields.io/github/actions/workflow/status/YOUR_ORG/setup-node-pro/ci.yml?style=for-the-badge" />
   <img src="https://img.shields.io/github/stars/YOUR_ORG/setup-node-pro?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/YOUR_ORG/setup-node-pro?style=for-the-badge" />
