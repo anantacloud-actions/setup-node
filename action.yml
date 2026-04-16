@@ -4,75 +4,108 @@ author: "Ananta Cloud"
 
 inputs:
   node-version:
-    description: "Version spec of Node.js (e.g. 18, 20.x, >=18.0.0)"
+    description: |
+      Version spec of Node.js (e.g., '18', '20.x', '>=18.0.0').
+      If not specified, will attempt to read from node-version-file.
     required: false
+    type: string
 
   node-version-file:
-    description: "File containing Node.js version (e.g. .nvmrc, .node-version, package.json, .tool-versions)"
+    description: |
+      File containing Node.js version (e.g., .nvmrc, .node-version, package.json, .tool-versions).
+      Used when node-version is not specified.
     required: false
+    type: string
 
   architecture:
-    description: "Target architecture (x86, x64, arm64). Defaults to system architecture."
+    description: "Target architecture. Defaults to system architecture."
     required: false
+    type: choice
+    default: "x64"
+    options:
+      - x86
+      - x64
+      - arm64
 
   check-latest:
     description: "Check for latest version matching the version spec"
     required: false
+    type: boolean
     default: "false"
 
   registry-url:
     description: "Registry URL for npm/yarn/pnpm authentication"
     required: false
+    type: string
 
   scope:
-    description: "Scope for registry authentication (e.g. @my-org)"
+    description: "Scope for registry authentication (e.g., @my-org)"
     required: false
+    type: string
 
   token:
-    description: "Token for downloading Node.js or registry authentication"
+    description: "Token for downloading Node.js or registry authentication. Defaults to github.token."
     required: false
-    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
+    type: string
 
   cache:
-    description: "Package manager for caching (npm | yarn | pnpm)"
+    description: "Package manager to cache (npm | yarn | pnpm). Omit to auto-detect."
     required: false
-
-  package-manager-cache:
-    description: "Enable/disable automatic caching"
-    required: false
-    default: "true"
+    type: choice
+    options:
+      - npm
+      - yarn
+      - pnpm
 
   cache-dependency-path:
-    description: "Path(s) to dependency files (supports wildcards)"
+    description: "Path(s) to dependency files for caching (supports wildcards)"
     required: false
+    type: string
 
   mirror:
     description: "Alternative mirror URL for Node.js binaries"
     required: false
+    type: string
 
   mirror-token:
     description: "Authorization token for mirror downloads"
     required: false
+    type: string
 
   install:
     description: "Install dependencies automatically"
     required: false
+    type: boolean
     default: "true"
 
   debug:
     description: "Enable debug logs"
     required: false
+    type: boolean
     default: "false"
 
 outputs:
   node-version:
     description: "Resolved and installed Node.js version"
+  
+  cache-hit:
+    description: "Whether the dependency cache was hit (true/false)"
+
+  npm-version:
+    description: "Resolved npm version"
+  
+  yarn-version:
+    description: "Resolved yarn version (if applicable)"
+  
+  pnpm-version:
+    description: "Resolved pnpm version (if applicable)"
 
 branding:
   color: blue
   icon: command
-  
+
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/index.js"
   post: "dist/post.js"
+  post-if: always()
