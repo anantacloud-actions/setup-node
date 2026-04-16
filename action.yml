@@ -68,6 +68,10 @@ outputs:
   node-version:
     description: "Resolved and installed Node.js version"
 
+branding:
+  color: blue
+  icon: command
+  
 runs:
   using: "node20"
   main: "dist/index.js"
