@@ -5,127 +5,123 @@ import * as cache from "@actions/cache";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import * as semver from "semver";
+import * as crypto from "crypto";
 
 async function run() {
   try {
     const debug = core.getBooleanInput("debug");
+    const log = (m: string) => core.info(debug ? `🐛 ${m}` : m);
 
-    function log(msg: string) {
-      core.info(debug ? `🐛 ${msg}` : msg);
-    }
-
+    // 1. Resolve version
     let version = core.getInput("node-version");
+    const versionFile = core.getInput("node-version-file");
 
-    if (!version) {
-      if (fs.existsSync(".nvmrc")) {
-        version = fs.readFileSync(".nvmrc", "utf-8").trim();
-        log(`Using .nvmrc: ${version}`);
-      } else if (fs.existsSync(".node-version")) {
-        version = fs.readFileSync(".node-version", "utf-8").trim();
-        log(`Using .node-version: ${version}`);
+    if (!version && versionFile && fs.existsSync(versionFile)) {
+      const content = fs.readFileSync(versionFile, "utf-8");
+      if (versionFile.includes("package.json")) {
+        const pkg = JSON.parse(content);
+        version = pkg.engines?.node;
       } else {
-        throw new Error("No node-version provided or version file found");
+        version = content.trim();
       }
+      log(`Resolved version from file: ${version}`);
     }
 
-    const checkLatest = core.getBooleanInput("check-latest");
+    if (!version) throw new Error("Node version not specified");
 
-    log(`Resolving version: ${version}`);
-
-    const manifest = await tc.getManifestFromRepo(
-      "actions",
-      "node-versions",
-      "main"
-    );
-
-    const resolved = tc.findFromManifest(version, false, manifest);
-
-    if (!resolved) {
-      throw new Error(`Version not found: ${version}`);
-    }
-
-    const finalVersion = resolved.version;
-    log(`Resolved to: ${finalVersion}`);
-
+    // 2. Platform
     const platform = os.platform();
-    const arch = os.arch();
+    const arch = core.getInput("architecture") || os.arch();
 
-    let ext = "tar.gz";
-    let binPath = "bin";
+    const ext = platform === "win32" ? "zip" : "tar.gz";
+    const base = core.getInput("mirror") || "https://nodejs.org/dist";
 
-    if (platform === "win32") {
-      ext = "zip";
-      binPath = "";
-    }
+    const url = `${base}/v${version}/node-v${version}-${platform}-${arch}.${ext}`;
+    log(`Download URL: ${url}`);
 
-    const url = `https://nodejs.org/dist/v${finalVersion}/node-v${finalVersion}-${platform}-${arch}.${ext}`;
-
-    log(`Downloading from: ${url}`);
-
-    let toolPath = tc.find("node", finalVersion, arch);
+    // 3. Install Node
+    let toolPath = tc.find("node", version, arch);
 
     if (!toolPath) {
-      const download = await tc.downloadTool(url);
-
+      const dl = await tc.downloadTool(url);
       const extracted =
         platform === "win32"
-          ? await tc.extractZip(download)
-          : await tc.extractTar(download);
+          ? await tc.extractZip(dl)
+          : await tc.extractTar(dl);
 
-      toolPath = await tc.cacheDir(extracted, "node", finalVersion, arch);
+      toolPath = await tc.cacheDir(extracted, "node", version, arch);
     }
 
-    core.addPath(path.join(toolPath, binPath));
+    core.addPath(path.join(toolPath, platform === "win32" ? "" : "bin"));
 
-    let nodeVersionOutput = "";
+    // 4. Verify
+    let output = "";
     await exec.exec("node", ["-v"], {
-      listeners: {
-        stdout: (data) => (nodeVersionOutput += data.toString())
-      }
+      listeners: { stdout: d => (output += d.toString()) }
     });
 
-    core.setOutput("node-version", nodeVersionOutput.trim());
-    log(`Node installed: ${nodeVersionOutput}`);
+    core.setOutput("node-version", output.trim());
+    log(`Node installed: ${output}`);
 
-    let pkgManager = "npm";
+    // 5. Detect package manager
+    let pm = core.getInput("cache");
+    if (!pm) {
+      if (fs.existsSync("pnpm-lock.yaml")) pm = "pnpm";
+      else if (fs.existsSync("yarn.lock")) pm = "yarn";
+      else pm = "npm";
+    }
 
-    if (fs.existsSync("pnpm-lock.yaml")) pkgManager = "pnpm";
-    else if (fs.existsSync("yarn.lock")) pkgManager = "yarn";
+    log(`Package manager: ${pm}`);
 
-    log(`Detected package manager: ${pkgManager}`);
+    // 6. Registry config
+    const registry = core.getInput("registry-url");
+    const token = core.getInput("token");
 
-    if (core.getBooleanInput("cache")) {
-      const key = `${pkgManager}-${platform}-${arch}-${finalVersion}-${process.env.GITHUB_SHA}`;
+    if (registry) {
+      const npmrc = path.join(os.homedir(), ".npmrc");
+      let content = `registry=${registry}\nalways-auth=true\n`;
 
-      let cacheDir = "";
+      if (token) {
+        const host = registry.replace(/^https?:/, "");
+        content += `${host}:_authToken=${token}\n`;
+      }
 
-      if (pkgManager === "npm") cacheDir = path.join(os.homedir(), ".npm");
-      if (pkgManager === "yarn") cacheDir = path.join(os.homedir(), ".cache/yarn");
-      if (pkgManager === "pnpm") cacheDir = path.join(os.homedir(), ".pnpm-store");
+      fs.writeFileSync(npmrc, content);
+    }
 
-      log(`Restoring cache: ${key}`);
+    // 7. Cache
+    if (core.getBooleanInput("package-manager-cache")) {
+      let lockfile = "package-lock.json";
+      if (pm === "yarn") lockfile = "yarn.lock";
+      if (pm === "pnpm") lockfile = "pnpm-lock.yaml";
 
-      await cache.restoreCache([cacheDir], key);
+      let hash = "nohash";
+      if (fs.existsSync(lockfile)) {
+        const data = fs.readFileSync(lockfile);
+        hash = crypto.createHash("sha256").update(data).digest("hex");
+      }
 
-      core.saveState("cache-dir", cacheDir);
+      const key = `${pm}-${platform}-${arch}-${version}-${hash}`;
+      let dir = path.join(os.homedir(), ".npm");
+
+      if (pm === "yarn") dir = path.join(os.homedir(), ".cache/yarn");
+      if (pm === "pnpm") dir = path.join(os.homedir(), ".pnpm-store");
+
+      await cache.restoreCache([dir], key);
+
+      core.saveState("cache-dir", dir);
       core.saveState("cache-key", key);
     }
 
+    // 8. Install deps
     if (core.getBooleanInput("install")) {
-      log("Installing dependencies...");
-
-      if (pkgManager === "npm") {
-        await exec.exec("npm", ["ci"]);
-      } else if (pkgManager === "yarn") {
-        await exec.exec("yarn", ["install", "--frozen-lockfile"]);
-      } else if (pkgManager === "pnpm") {
-        await exec.exec("pnpm", ["install", "--frozen-lockfile"]);
-      }
+      if (pm === "npm") await exec.exec("npm", ["ci"]);
+      if (pm === "yarn") await exec.exec("yarn", ["install", "--frozen-lockfile"]);
+      if (pm === "pnpm") await exec.exec("pnpm", ["install", "--frozen-lockfile"]);
     }
 
-  } catch (err: any) {
-    core.setFailed(err.message);
+  } catch (e: any) {
+    core.setFailed(e.message);
   }
 }
 
