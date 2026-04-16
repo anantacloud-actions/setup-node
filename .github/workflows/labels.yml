@@ -1,0 +1,32 @@
+name: Setup Labels
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create labels
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const labels = [
+              { name: "bug", color: "d73a4a" },
+              { name: "enhancement", color: "a2eeef" },
+              { name: "release", color: "5319e7" }
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  color: label.color
+                });
+              } catch (e) {
+                console.log(`Label ${label.name} may already exist`);
+              }
+            }

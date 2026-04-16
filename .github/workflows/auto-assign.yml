@@ -1,0 +1,38 @@
+name: Auto Assign Reviewers
+on:
+  pull_request:
+    types: [opened, labeled, synchronize]
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign reviewers based on labels
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = pr.labels.map(l => l.name);
+
+            let reviewers = [];
+
+            if (labels.includes("release")) {
+              reviewers.push("release-approvers");
+            }
+
+            if (labels.includes("bug") || labels.includes("enhancement")) {
+              reviewers.push("action-maintainers");
+            }
+
+            if (labels.includes("security")) {
+              reviewers.push("security-approvers");
+            }
+
+            if (reviewers.length > 0) {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                reviewers: [],
+                team_reviewers: reviewers
+              });
+            }

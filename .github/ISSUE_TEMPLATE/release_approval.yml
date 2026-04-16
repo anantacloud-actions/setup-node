@@ -1,0 +1,35 @@
+name: 🚀 Release Approval
+description: Request approval for a new release
+title: "[RELEASE] "
+labels: ["release"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: v1.2.3
+    validations:
+      required: true
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: Changes Included
+      placeholder: Summary of changes in this release
+    validations:
+      required: true
+
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risk Assessment
+      placeholder: Any risks or breaking changes?
+
+  - type: checkboxes
+    id: approvals
+    attributes:
+      label: Required Approvals
+      options:
+        - label: Approved by action-maintainers
+        - label: Approved by security-approvers (if applicable)
+        - label: Approved by release-approvers

@@ -1,0 +1,27 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 💬 Discussions / Questions
+    url: https://github.com/anantacloud-actions/github-release-action/discussions
+    about: Ask questions, share ideas, or get help from the community
+
+  - name: 🔐 Security Vulnerability Report
+    url: https://github.com/anantacloud-actions/github-release-action/security/advisories/new
+    about: Report sensitive security issues privately to the security-approvers team
+
+  - name: 📖 Documentation
+    url: https://github.com/anantacloud-actions/github-release-action#readme
+    about: Read usage guides, examples, and FAQs
+
+issue_templates:
+  - name: 🐛 Bug Report
+    description: Report something that is broken
+    file: bug_report.yml
+
+  - name: 🚀 Feature Request
+    description: Suggest a new feature or enhancement
+    file: feature_request.yml
+
+  - name: 🚀 Release Approval
+    description: Request approval for publishing a new release
+    file: release_approval.yml

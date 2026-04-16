@@ -1,0 +1,72 @@
+name: Changelog Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Generate preview notes
+        id: notes
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+
+            const tags = await github.rest.repos.listTags({
+              owner, repo, per_page: 1
+            });
+
+            const latestTag = tags.data.length ? tags.data[0].name : undefined;
+
+            const res = await github.rest.repos.generateReleaseNotes({
+              owner,
+              repo,
+              tag_name: "preview",
+              previous_tag_name: latestTag,
+              target_commitish: context.payload.pull_request.head.sha
+            });
+
+            core.setOutput("body", res.data.body);
+
+      - name: Upsert PR comment
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const body = `## 🔮 Release Preview\n\n${{ steps.notes.outputs.body }}`;
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const comments = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number
+            });
+
+            const botComment = comments.data.find(c =>
+              c.user.type === "Bot" && c.body.includes("🔮 Release Preview")
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: botComment.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body
+              });
+            }

@@ -13,17 +13,21 @@
     "setup-node",
     "ci-cd"
   ],
-  "author": "Your Name",
+  "author": "Ananta Cloud",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.11.1",
-    "@actions/tool-cache": "^2.0.1",
-    "@actions/cache": "^3.2.1",
+    "@actions/cache": "^4.0.0",
+    "@actions/core": "^3.0.0",
     "@actions/exec": "^1.1.1",
+    "@actions/tool-cache": "^2.0.1",
     "semver": "^7.6.0"
   },
+  "overrides": {
+    "undici": "^6.23.1"
+  },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "@vercel/ncc": "^0.38.1"
+    "@types/node": "^20.19.39",
+    "@vercel/ncc": "^0.38.1",
+    "typescript": "^5.3.3"
   }
 }

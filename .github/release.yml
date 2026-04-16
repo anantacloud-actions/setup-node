@@ -1,0 +1,29 @@
+changelog:
+  categories:
+    - title: "🚀 Features"
+      labels:
+        - "enhancement"
+        - "feature"
+
+    - title: "🐛 Fixes"
+      labels:
+        - "bug"
+        - "fix"
+
+    - title: "⚡ Performance"
+      labels:
+        - "performance"
+
+    - title: "🧹 Chores"
+      labels:
+        - "chore"
+        - "dependencies"
+
+  exclude:
+    labels:
+      - "skip-changelog"
+      - "internal"
+
+  authors:
+    - username: "dependabot[bot]"
+      display_name: "Dependabot 🤖"

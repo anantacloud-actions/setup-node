@@ -1,0 +1,68 @@
+version: 2
+
+updates:
+  # --------------------------------------------------
+  # 📦 Node.js Dependencies (npm)
+  # --------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"   # can be weekly if you want less noise
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+
+    # Group updates to avoid PR spam
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+    # Limit open PRs
+    open-pull-requests-limit: 10
+
+    # Labels auto-applied
+    labels:
+      - "dependencies"
+      - "npm"
+
+    # Assign reviewers (non-blocking, CODEOWNERS still applies)
+    reviewers:
+      - "anantacloud-actions/action-maintainers"
+
+    # Commit message style
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+    # Allow both direct + indirect updates
+    allow:
+      - dependency-type: "all"
+
+    # Ignore major updates if you want stability (optional)
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # --------------------------------------------------
+  # 🤖 GitHub Actions Dependencies
+  # --------------------------------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Asia/Kolkata"
+
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+    reviewers:
+      - "anantacloud-actions/action-maintainers"
+
+    commit-message:
+      prefix: "ci"
+
+    open-pull-requests-limit: 5

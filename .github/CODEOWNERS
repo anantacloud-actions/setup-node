@@ -1,0 +1,74 @@
+# ==========================================
+# CODEOWNERS — Governance + Enforcement
+# ==========================================
+# Order matters: last matching rule takes precedence
+
+# --------------------------------------------------
+# 👑 GLOBAL OWNERSHIP (MANDATORY)
+# --------------------------------------------------
+# action-maintainers must approve EVERYTHING
+*   @anantacloud-actions/action-maintainers
+
+# --------------------------------------------------
+# 🔐 SECURITY-CRITICAL AREAS
+# --------------------------------------------------
+# Require additional approval from security team
+
+/security/                  @anantacloud-actions/security-approvers
+.github/dependabot.yml      @anantacloud-actions/security-approvers
+.github/workflows/security* @anantacloud-actions/security-approvers
+
+# --------------------------------------------------
+# 🚀 RELEASE-CRITICAL AREAS
+# --------------------------------------------------
+# Require release-approvers for publishing logic
+
+release.yml                 @anantacloud-actions/release-approvers
+.github/workflows/release*  @anantacloud-actions/release-approvers
+action.yml                  @anantacloud-actions/release-approvers
+
+# --------------------------------------------------
+# ⚙️ CORE ACTION LOGIC
+# --------------------------------------------------
+# High-impact changes → tightly controlled
+
+/src/                       @anantacloud-actions/action-maintainers
+/dist/                      @anantacloud-actions/action-maintainers
+
+# --------------------------------------------------
+# 🧪 TESTS
+# --------------------------------------------------
+/tests/                     @anantacloud-actions/action-maintainers
+
+# --------------------------------------------------
+# 📖 DOCUMENTATION
+# --------------------------------------------------
+# Maintainers still required, others optional via PR
+
+/docs/                      @anantacloud-actions/action-maintainers
+README.md                   @anantacloud-actions/action-maintainers
+
+# --------------------------------------------------
+# 🤖 BOTS (NON-BLOCKING)
+# --------------------------------------------------
+# Bots get auto-assigned but do NOT gate merges
+
+package.json                @dependabot[bot]
+package-lock.json           @dependabot[bot]
+.github/                    @dependabot[bot]
+
+# --------------------------------------------------
+# 🧾 FALLBACK (EXPLICIT)
+# --------------------------------------------------
+# Reinforces global rule
+
+*   @anantacloud-actions/action-maintainers
+
+# ==========================================
+# ENFORCEMENT (SET IN BRANCH PROTECTION)
+# ==========================================
+# ✅ Require pull request reviews
+# ✅ Require review from Code Owners
+# ✅ Require 1–2 approvals minimum
+# ✅ Require status checks (CI must pass)
+# ==========================================

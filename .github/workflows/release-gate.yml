@@ -1,0 +1,39 @@
+name: Release Gate
+on:
+  issues:
+    types: [closed]
+jobs:
+  validate-release:
+    if: contains(github.event.issue.labels.*.name, 'release')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate approval checklist
+        id: validate
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const body = context.payload.issue.body;
+
+            const requiredChecks = [
+              "Approved by action-maintainers",
+              "Approved by release-approvers"
+            ];
+
+            const missing = requiredChecks.filter(check => !body.includes(`[x] ${check}`));
+
+            if (missing.length > 0) {
+              core.setFailed(`Missing approvals: ${missing.join(", ")}`);
+            }
+
+      - name: Trigger release pipeline
+        if: success()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "release.yml",
+              ref: "main"
+            });

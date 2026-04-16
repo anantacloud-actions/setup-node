@@ -1,0 +1,23 @@
+name: Auto Merge Dependabot
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  automerge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check update type
+        id: meta
+        uses: dependabot/fetch-metadata@v3
+
+      - name: Auto merge safe updates
+        if: |
+          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
+          steps.meta.outputs.update-type == 'version-update:semver-minor'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          merge-method: squash
