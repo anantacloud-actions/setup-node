@@ -1,4 +1,4 @@
-# ⚡ Setup Node.js Pro
+# ⚡ Setup NodeJS
 
 <img width="863" height="485" alt="image" src="https://github.com/user-attachments/assets/ff9b4782-a815-41c3-8f27-ecc3a7391392" />
 
@@ -11,6 +11,15 @@
   <img src="https://img.shields.io/github/license/YOUR_ORG/setup-node-pro?style=for-the-badge" />
   <img src="https://img.shields.io/github/v/release/YOUR_ORG/setup-node-pro?style=for-the-badge" />
 </p>
+
+----
+
+**Please note**: We take our GitHub action's security and users' trust
+very seriously. If you believe you have found a security issue
+in any of our GitHub action, _please responsibly disclose_ by contacting us at
+[security@anantacloud.com](mailto:security@anantacloud.com).
+
+----
 
 ## 🚀 Why Setup Node.js Pro?
 
