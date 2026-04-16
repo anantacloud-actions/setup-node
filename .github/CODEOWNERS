@@ -53,9 +53,9 @@ README.md                   @anantacloud-actions/action-maintainers
 # --------------------------------------------------
 # Bots get auto-assigned but do NOT gate merges
 
-package.json                @dependabot[bot]
-package-lock.json           @dependabot[bot]
-.github/                    @dependabot[bot]
+package.json                @anantacloud-actions/action-maintainers
+package-lock.json           @anantacloud-actions/action-maintainers
+.github/                    @anantacloud-actions/action-maintainers
 
 # --------------------------------------------------
 # 🧾 FALLBACK (EXPLICIT)
