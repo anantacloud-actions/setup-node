@@ -27,50 +27,113 @@ Most Node setup actions stop at installation.
 This one goes further.
 
 - Auto-detects package manager (npm, yarn, pnpm)  
-- Supports `.nvmrc` & `.node-version`  
+- Supports `.nvmrc`, `.node-version`, `package.json`, `.tool-versions`  
 - Semver-aware version resolution  
 - Cross-platform (Linux, macOS, Windows)  
 - Built-in dependency install  
 - Matrix-aware intelligent caching  
+- Registry + authentication support  
+- Mirror support for Node.js binaries  
 - Debug mode for deep CI visibility  
 
 Think of it as **setup-node, but evolved**.
 
+---
+
 ## ⚡ Quick Start
+
 ```yaml
 - name: Setup Node.js
-  uses: YOUR_ORG/setup-node-pro@v1
+  uses: anantacloud-actions/setup-node@v1
 ```
 
+---
+
 ## 🧩 Usage Examples
+
 ### Use specific Node version
+
 ```yaml
-- uses: YOUR_ORG/setup-node-pro@v1
+- uses: anantacloud-actions/setup-node@v1
   with:
     node-version: 20
 ```
 
-### Use `.nvmrc` automatically
-```yaml
-- uses: YOUR_ORG/setup-node-pro@v1
-```
+### Use version from file
 
-### Enable debug logs
 ```yaml
-- uses: YOUR_ORG/setup-node-pro@v1
+- uses: anantacloud-actions/setup-node@v1
   with:
-    debug: true
+    node-version-file: .nvmrc
 ```
 
-### Skip install step
+### Enable caching
+
 ```yaml
-- uses: YOUR_ORG/setup-node-pro@v1
+- uses: anantacloud-actions/setup-node@v1
+  with:
+    cache: npm
+```
+
+### Configure private registry
+
+```yaml
+- uses: anantacloud-actions/setup-node@v1
+  with:
+    registry-url: https://registry.npmjs.org
+    token: ${{ secrets.NPM_TOKEN }}
+```
+
+### Disable install step
+
+```yaml
+- uses: anantacloud-actions/setup-node@v1
   with:
     install: false
 ```
 
-## 🧠 Smart Features
-### Auto Package Manager Detection
+---
+
+## 🛠 Inputs
+
+| Name | Description | Required | Default |
+|-----|------------|----------|--------|
+| `node-version` | Version spec (e.g. 18, 20.x, >=18.0.0) | ❌ | - |
+| `node-version-file` | File with version (e.g. .nvmrc, package.json) | ❌ | - |
+| `architecture` | Target architecture (x86, x64, arm64) | ❌ | system |
+| `check-latest` | Resolve latest matching version | ❌ | false |
+| `registry-url` | Registry URL for npm/yarn/pnpm | ❌ | - |
+| `scope` | Scope for registry authentication | ❌ | repo owner |
+| `token` | Auth token for registry or downloads | ❌ | github token |
+| `cache` | Package manager cache (npm, yarn, pnpm) | ❌ | auto |
+| `package-manager-cache` | Enable/disable automatic caching | ❌ | true |
+| `cache-dependency-path` | Path(s) to dependency files | ❌ | auto |
+| `mirror` | Alternative Node.js download mirror | ❌ | nodejs.org |
+| `mirror-token` | Token for mirror authentication | ❌ | - |
+| `install` | Install dependencies automatically | ❌ | true |
+| `debug` | Enable debug logging | ❌ | false |
+
+---
+
+## 📤 Outputs
+
+| Name | Description |
+|------|------------|
+| `node-version` | Installed Node.js version |
+
+---
+
+## 🧠 Feature Breakdown
+
+### 🔍 Version Resolution Priority
+
+1. `node-version`
+2. `node-version-file`
+3. Error if none provided
+
+---
+
+### 📦 Auto Package Manager Detection
 
 | File Found        | Manager |
 |------------------|--------|
@@ -78,37 +141,49 @@ Think of it as **setup-node, but evolved**.
 | yarn.lock        | yarn   |
 | none             | npm    |
 
-### 📦 Built-in Install
+---
+
+### ⚡ Built-in Install
+
 | Manager | Command |
 |--------|--------|
 | npm    | npm ci |
 | yarn   | yarn install --frozen-lockfile |
 | pnpm   | pnpm install --frozen-lockfile |
 
+---
+
 ### ⚡ Matrix-Aware Caching
+
 Cache key includes:
 - OS
 - Architecture
 - Node version
-- Commit SHA
+- Lockfile hash
 
 Result: faster and more reliable CI runs.
 
-## 🛠 Inputs
-| Name | Description | Default |
-|-----|------------|--------|
-| node-version | Node version (semver supported) | auto |
-| check-latest | Resolve latest matching version | true |
-| cache | Enable caching | true |
-| install | Install dependencies | true |
-| debug | Enable debug logs | false |
+---
 
-## 📤 Outputs
-| Name | Description |
-|------|------------|
-| node-version | Installed Node version |
+### 🌐 Registry Authentication
+
+Supports:
+- npm registry
+- GitHub Packages
+- Custom registries
+
+Automatically configures `.npmrc`.
+
+---
+
+### 🌍 Mirror Support
+
+Use custom mirror for faster downloads or internal networks.
+
+---
 
 ## 🔥 Comparison
+
 | Feature | setup-node | Setup Node.js Pro |
 |--------|-----------|------------------|
 | Auto detect package manager | ❌ | ✅ |
@@ -116,20 +191,33 @@ Result: faster and more reliable CI runs.
 | Debug logs | ❌ | ✅ |
 | Matrix-aware cache | ⚠️ | ✅ |
 | Version file support | ⚠️ | ✅ |
+| Mirror support | ❌ | ✅ |
+
+---
 
 ## 🎯 Use Cases
+
 - Monorepos (pnpm / yarn workspaces)
-- High-performance CI pipelines
-- Multi-version matrix builds
+- Enterprise CI pipelines
+- Multi-version testing
+- Air-gapped environments (mirror support)
 - Zero-config projects
-- Enterprise pipelines with strict caching
+
+---
 
 ## ⭐ Support
-- If this project helps you, consider giving it a ⭐  
-- It helps others discover it.
+
+If this project helps you, consider giving it a ⭐  
+It helps others discover it.
+
+---
 
 ## 🧑‍💻 Contributing
-Contributions are welcome. Feel free to open issues or submit PRs.
+
+PRs, issues, and suggestions are welcome.
+
+---
 
 ## 📄 License
+
 MIT
