@@ -68,7 +68,7 @@ async function run() {
     const binPath = platform === "win32" ? toolPath : path.join(toolPath, "bin");
     core.addPath(binPath);
 
-    // Verify
+    // Verify Node
     let nodeVersionOutput = "";
     await exec.exec("node", ["-v"], {
       listeners: {
@@ -113,8 +113,15 @@ async function run() {
     }
 
     // =========================
-    // 6. Cache
+    // 6. Cache (only if project exists)
     // =========================
+    const hasPackageJson = fs.existsSync("package.json");
+
+    if (!hasPackageJson) {
+      core.info("No package.json found, skipping cache and install steps");
+      return;
+    }
+
     if (core.getBooleanInput("package-manager-cache")) {
       let lockfile = "package-lock.json";
       if (pm === "yarn") lockfile = "yarn.lock";
@@ -134,7 +141,12 @@ async function run() {
       if (pm === "pnpm") cacheDir = path.join(os.homedir(), ".pnpm-store");
 
       log(`Restoring cache with key: ${key}`);
-      await cache.restoreCache([cacheDir], key);
+
+      try {
+        await cache.restoreCache([cacheDir], key);
+      } catch (e: any) {
+        core.warning(`Cache restore failed: ${e.message}`);
+      }
 
       core.saveState("cache-dir", cacheDir);
       core.saveState("cache-key", key);
@@ -148,8 +160,6 @@ async function run() {
 
       if (pm === "npm") {
         const hasLock = fs.existsSync("package-lock.json");
-
-        log(`Lockfile present: ${hasLock}`);
 
         if (hasLock) {
           await exec.exec("npm", ["ci"]);
