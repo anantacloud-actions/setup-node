@@ -6,12 +6,12 @@ async function run() {
     const dir = core.getState("cache-dir");
     const key = core.getState("cache-key");
 
-    if (dir && key) {
-      await cache.saveCache([dir], key);
-      core.info("Cache saved");
-    }
+    if (!dir || !key) return;
+
+    await cache.saveCache([dir], key);
+    core.info("✅ Cache saved");
   } catch (e: any) {
-    core.warning(e.message);
+    core.warning(`Cache save failed: ${e.message}`);
   }
 }
 
