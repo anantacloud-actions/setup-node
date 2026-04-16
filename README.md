@@ -6,7 +6,7 @@
 > Zero guesswork. Maximum speed. Built for modern CI.
 
 <p align="left">
-  <img src="https://img.shields.io/github/actions/workflow/status/anantacloud-actions/setup-node/ci.yml?style=for-the-badge" />
+  <img src="https://img.shields.io/github/actions/workflow/status/anantacloud-actions/setup-node/release-gate.yml?style=for-the-badge" />
   <img src="https://img.shields.io/github/stars/anantacloud-actions/setup-node?style=for-the-badge" />
   <img src="https://img.shields.io/github/license/anantacloud-actions/setup-node?style=for-the-badge" />
   <img src="https://img.shields.io/github/v/release/anantacloud-actions/setup-node?style=for-the-badge" />
@@ -22,7 +22,6 @@ in any of our GitHub action, _please responsibly disclose_ by contacting us at
 ----
 
 ## 🚀 Why Setup Node.js Pro?
-
 Most Node setup actions stop at installation.  
 This one goes further.
 
@@ -41,7 +40,6 @@ Think of it as **setup-node, but evolved**.
 ---
 
 ## ⚡ Quick Start
-
 ```yaml
 - name: Setup Node.js
   uses: anantacloud-actions/setup-node@v1
@@ -52,7 +50,6 @@ Think of it as **setup-node, but evolved**.
 ## 🧩 Usage Examples
 
 ### Use specific Node version
-
 ```yaml
 - uses: anantacloud-actions/setup-node@v1
   with:
@@ -60,7 +57,6 @@ Think of it as **setup-node, but evolved**.
 ```
 
 ### Use version from file
-
 ```yaml
 - uses: anantacloud-actions/setup-node@v1
   with:
@@ -68,7 +64,6 @@ Think of it as **setup-node, but evolved**.
 ```
 
 ### Enable caching
-
 ```yaml
 - uses: anantacloud-actions/setup-node@v1
   with:
@@ -76,7 +71,6 @@ Think of it as **setup-node, but evolved**.
 ```
 
 ### Configure private registry
-
 ```yaml
 - uses: anantacloud-actions/setup-node@v1
   with:
@@ -85,7 +79,6 @@ Think of it as **setup-node, but evolved**.
 ```
 
 ### Disable install step
-
 ```yaml
 - uses: anantacloud-actions/setup-node@v1
   with:
@@ -95,7 +88,6 @@ Think of it as **setup-node, but evolved**.
 ---
 
 ## 🛠 Inputs
-
 | Name | Description | Required | Default |
 |-----|------------|----------|--------|
 | `node-version` | Version spec (e.g. 18, 20.x, >=18.0.0) | ❌ | - |
@@ -116,7 +108,6 @@ Think of it as **setup-node, but evolved**.
 ---
 
 ## 📤 Outputs
-
 | Name | Description |
 |------|------------|
 | `node-version` | Installed Node.js version |
@@ -126,7 +117,6 @@ Think of it as **setup-node, but evolved**.
 ## 🧠 Feature Breakdown
 
 ### 🔍 Version Resolution Priority
-
 1. `node-version`
 2. `node-version-file`
 3. Error if none provided
@@ -134,7 +124,6 @@ Think of it as **setup-node, but evolved**.
 ---
 
 ### 📦 Auto Package Manager Detection
-
 | File Found        | Manager |
 |------------------|--------|
 | pnpm-lock.yaml   | pnpm   |
@@ -144,7 +133,6 @@ Think of it as **setup-node, but evolved**.
 ---
 
 ### ⚡ Built-in Install
-
 | Manager | Command |
 |--------|--------|
 | npm    | npm ci |
@@ -154,7 +142,6 @@ Think of it as **setup-node, but evolved**.
 ---
 
 ### ⚡ Matrix-Aware Caching
-
 Cache key includes:
 - OS
 - Architecture
@@ -166,7 +153,6 @@ Result: faster and more reliable CI runs.
 ---
 
 ### 🌐 Registry Authentication
-
 Supports:
 - npm registry
 - GitHub Packages
@@ -177,13 +163,11 @@ Automatically configures `.npmrc`.
 ---
 
 ### 🌍 Mirror Support
-
 Use custom mirror for faster downloads or internal networks.
 
 ---
 
 ## 🔥 Comparison
-
 | Feature | setup-node | Setup Node.js Pro |
 |--------|-----------|------------------|
 | Auto detect package manager | ❌ | ✅ |
@@ -196,7 +180,6 @@ Use custom mirror for faster downloads or internal networks.
 ---
 
 ## 🎯 Use Cases
-
 - Monorepos (pnpm / yarn workspaces)
 - Enterprise CI pipelines
 - Multi-version testing
@@ -206,18 +189,15 @@ Use custom mirror for faster downloads or internal networks.
 ---
 
 ## ⭐ Support
-
 If this project helps you, consider giving it a ⭐  
 It helps others discover it.
 
 ---
 
 ## 🧑‍💻 Contributing
-
 PRs, issues, and suggestions are welcome.
 
 ---
 
 ## 📄 License
-
 MIT
