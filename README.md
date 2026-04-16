@@ -6,10 +6,10 @@
 > Zero guesswork. Maximum speed. Built for modern CI.
 
 <p align="left">
-  <img src="https://img.shields.io/github/actions/workflow/status/YOUR_ORG/setup-node-pro/ci.yml?style=for-the-badge" />
-  <img src="https://img.shields.io/github/stars/YOUR_ORG/setup-node-pro?style=for-the-badge" />
-  <img src="https://img.shields.io/github/license/YOUR_ORG/setup-node-pro?style=for-the-badge" />
-  <img src="https://img.shields.io/github/v/release/YOUR_ORG/setup-node-pro?style=for-the-badge" />
+  <img src="https://img.shields.io/github/actions/workflow/status/anantacloud-actions/setup-node/ci.yml?style=for-the-badge" />
+  <img src="https://img.shields.io/github/stars/anantacloud-actions/setup-node?style=for-the-badge" />
+  <img src="https://img.shields.io/github/license/anantacloud-actions/setup-node?style=for-the-badge" />
+  <img src="https://img.shields.io/github/v/release/anantacloud-actions/setup-node?style=for-the-badge" />
 </p>
 
 ----
