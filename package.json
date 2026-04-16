@@ -4,7 +4,7 @@
   "description": "Advanced Node.js setup GitHub Action with caching, semver, and auto-detection",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:index && npm run build:post",
+    "build": "ncc build src/index.ts -o dist && ncc build src/post.ts -o dist",
     "build:index": "ncc build src/index.ts -o dist",
     "build:post": "ncc build src/post.ts -o dist",
     "tsc": "tsc"
