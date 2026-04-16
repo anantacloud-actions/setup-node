@@ -1,36 +1,74 @@
 name: "Setup Node.js Pro"
-description: "Advanced Node.js setup with auto-detect, caching, semver, and install"
+description: "Setup a Node.js environment with smart defaults, auto-detection, caching, and cross-platform support."
+author: "Ananta Cloud"
 
 inputs:
   node-version:
-    description: "Node version (overrides .nvmrc/.node-version)"
+    description: "Version spec of Node.js (e.g. 18, 20.x, >=18.0.0)"
+    required: false
+
+  node-version-file:
+    description: "File containing Node.js version (e.g. .nvmrc, .node-version, package.json, .tool-versions)"
+    required: false
+
+  architecture:
+    description: "Target architecture (x86, x64, arm64). Defaults to system architecture."
     required: false
 
   check-latest:
-    description: "Resolve latest matching version"
-    default: "true"
+    description: "Check for latest version matching the version spec"
+    required: false
+    default: "false"
+
+  registry-url:
+    description: "Registry URL for npm/yarn/pnpm authentication"
+    required: false
+
+  scope:
+    description: "Scope for registry authentication (e.g. @my-org)"
+    required: false
+
+  token:
+    description: "Token for downloading Node.js or registry authentication"
+    required: false
+    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 
   cache:
-    description: "Enable caching (true/false)"
+    description: "Package manager for caching (npm | yarn | pnpm)"
+    required: false
+
+  package-manager-cache:
+    description: "Enable/disable automatic caching"
+    required: false
     default: "true"
 
+  cache-dependency-path:
+    description: "Path(s) to dependency files (supports wildcards)"
+    required: false
+
+  mirror:
+    description: "Alternative mirror URL for Node.js binaries"
+    required: false
+
+  mirror-token:
+    description: "Authorization token for mirror downloads"
+    required: false
+
   install:
-    description: "Auto install dependencies"
+    description: "Install dependencies automatically"
+    required: false
     default: "true"
 
   debug:
     description: "Enable debug logs"
+    required: false
     default: "false"
 
 outputs:
   node-version:
-    description: "Resolved Node version"
+    description: "Resolved and installed Node.js version"
 
-branding:
-  color: blue
-  icon: command
-  
 runs:
-  using: "node24"
+  using: "node20"
   main: "dist/index.js"
   post: "dist/post.js"
