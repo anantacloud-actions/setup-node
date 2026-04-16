@@ -1,0 +1,29 @@
+{
+  "name": "setup-node",
+  "version": "1.0.0",
+  "description": "Advanced Node.js setup GitHub Action with caching, semver, and auto-detection",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "ncc build src/index.ts -o dist"
+  },
+  "keywords": [
+    "github-actions",
+    "nodejs",
+    "setup-node",
+    "ci-cd"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/tool-cache": "^2.0.1",
+    "@actions/cache": "^3.2.1",
+    "@actions/exec": "^1.1.1",
+    "semver": "^7.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@vercel/ncc": "^0.38.1"
+  }
+}
