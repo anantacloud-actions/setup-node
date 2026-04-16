@@ -1,4 +1,4 @@
-name: "Setup Node.js Pro"
+name: "Setup Node.js Environment"
 description: "Setup a Node.js environment with smart defaults, auto-detection, caching, and cross-platform support."
 author: "Ananta Cloud"
 
