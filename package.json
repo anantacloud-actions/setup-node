@@ -29,8 +29,8 @@
     "undici": "^6.23.1"
   },
   "devDependencies": {
-    "@types/node": "^20.19.39",
-    "@vercel/ncc": "^0.38.1",
+    "@types/node": "^20.19.43",
+    "@vercel/ncc": "^0.44.0",
     "typescript": "^5.3.3"
   }
 }
